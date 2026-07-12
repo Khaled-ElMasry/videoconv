@@ -51,7 +51,124 @@
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
+/* ── Bug #1: Global drop overlay ───────────────────────── */
+#vcs-drop-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+#vcs-drop-overlay.is-visible { opacity: 1; pointer-events: all; }
+.vcs-overlay-inner {
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    color: #fff; font-size: 22px; font-weight: 700;
+    border: 2px dashed #555;
+    border-radius: 20px; padding: 48px 64px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{ border-color:#555; } 50%{ border-color:#999; } }
+
+/* ── Bug #2: Audio-only placeholder ────────────────────── */
+.vcs-audio-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--block-inner);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px; color: var(--text-secondary);
+}
+.vcs-audio-name {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    max-width: 90%; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+    text-align: center;
+}
+
+/* ── UX #4: Queue header with Clear All ─────────────────── */
+.vcs-queue-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+.vcs-queue-header .vcs-block-title { margin-bottom: 0; }
+.vcs-clear-btn {
+    font-size: 11.5px !important;
+    padding: 5px 12px !important;
+    color: var(--error) !important;
+    border-color: var(--error-bg) !important;
+}
+.vcs-clear-btn:hover { background: var(--error-bg) !important; }
+
+/* ── UX #7: Keyboard hint ───────────────────────────────── */
+.vcs-kbd-hint {
+    font-size: 11px; color: var(--text-hint);
+    margin: 0 0 12px; display: flex; gap: 4px; align-items: center; flex-wrap: wrap;
+}
+kbd {
+    background: var(--block-inner); border: 1px solid #3a3a3a;
+    border-radius: 4px; padding: 1px 6px;
+    font-family: inherit; font-size: 10.5px; color: var(--text-secondary);
+}
+
+/* ── Feature #12: Estimate size warning ─────────────────── */
+.vcs-est-warn {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: var(--r-pill);
+    margin-left: 6px;
+}
+.vcs-est-warn.is-caution { background: var(--warning-bg); color: var(--warning); }
+.vcs-est-warn.is-over    { background: var(--error-bg);   color: var(--error); }
+
+/* ── Polish #17: Format badge in queue row ──────────────── */
+.vcs-file-fmt {
+    font-size: 10px; font-weight: 700;
+    color: var(--text-hint); letter-spacing: 0.5px;
+    text-transform: uppercase; flex-shrink: 0;
+}
+
+/* ── Feature #14: Per-row download button ───────────────── */
+.vcs-dl-btn {
+    background: var(--success-bg); border: none;
+    color: var(--success); font-size: 14px;
+    padding: 2px 8px; border-radius: var(--r-sm);
+    cursor: pointer; transition: background 0.15s;
+    font-weight: 700; line-height: 1.4;
+    min-width: 32px; min-height: 28px;
+}
+.vcs-dl-btn:hover { background: rgba(52,211,153,0.2); }
+
+/* ── Per-row actions group ──────────────────────────────── */
+.vcs-file-actions {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+
+/* ── Trim badge ─────────────────────────────────────────── */
+.vcs-trim-badge {
+    font-size: 11px; color: var(--accent); flex-shrink: 0;
+    title: 'Custom trim'; cursor: default;
+}
+
+/* ── Feature #10: Drag-to-reorder indicators ────────────── */
+.vcs-file-row.is-dragging { opacity: 0.4; }
+.vcs-file-row.drag-above  { box-shadow: 0 -2px 0 0 var(--accent); }
+.vcs-file-row.drag-below  { box-shadow: 0 2px 0 0 var(--accent); }
+.vcs-file-row[draggable="true"] { cursor: grab; }
+.vcs-file-row[draggable="true"]:active { cursor: grabbing; }
+
+/* ── UX #9: Bigger remove button touch target ───────────── */
+.vcs-remove-btn {
+    min-width: 32px; min-height: 32px;
+    display: flex; align-items: center; justify-content: center;
+}
+
 /* ── Page ──────────────────────────────────────────────── */
+
 body {
     background: var(--bg);
     color: var(--text-primary);

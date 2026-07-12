@@ -36,13 +36,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=10">
     <script src="ffmpeg.js"></script>
     <script src="ffmpeg-util.js"></script>
     <script src="jszip.js"></script>
 </head>
 <body>
     <div class="vcs-page">
+        <!-- Bug #1: Full-page drop overlay -->
+        <div id="vcs-drop-overlay" aria-hidden="true">
+            <div class="vcs-overlay-inner">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><polyline points="9 15 12 18 15 15"/></svg>
+                <span>Drop files anywhere</span>
+            </div>
+        </div>
+
         <div class="vcs-card" id="vcs-card">
 
             <!-- ── Header ── -->
@@ -100,7 +108,13 @@
                     <!-- Preview -->
                     <section id="vcs-preview-panel" class="vcs-panel vcs-block" aria-label="Video preview and trim">
                         <h2 class="vcs-block-title">Preview &amp; Trim</h2>
+                        <!-- Video player -->
                         <video id="vcs-preview-player" controls aria-label="Video preview player" preload="metadata"></video>
+                        <!-- Bug #2: Audio-only placeholder -->
+                        <div id="vcs-audio-placeholder" class="vcs-audio-placeholder" style="display:none;" aria-label="Audio file preview">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                            <span class="vcs-audio-name"></span>
+                        </div>
                         <div class="vcs-preview-controls">
                             <span id="vcs-preview-time" class="vcs-preview-label" aria-live="polite">No file selected</span>
                             <div class="vcs-trim-btns" role="group" aria-label="Trim controls">
@@ -112,7 +126,11 @@
 
                     <!-- Queue -->
                     <section id="vcs-files-panel" class="vcs-panel vcs-block" aria-label="Conversion queue">
-                        <h2 class="vcs-block-title">Queue</h2>
+                        <div class="vcs-queue-header">
+                            <h2 class="vcs-block-title">Queue</h2>
+                            <!-- UX #4: Clear All -->
+                            <button id="vcs-clear-btn" class="vcs-btn vcs-ghost-btn vcs-clear-btn" type="button" aria-label="Clear all files from queue" style="display:none;">Clear All</button>
+                        </div>
                         <div class="vcs-file-list-container" role="list" aria-label="Files queued for conversion">
                             <div id="vcs-file-list"></div>
                         </div>
@@ -123,6 +141,8 @@
                             <button id="vcs-zip-btn"     class="vcs-btn vcs-zip-btn"     aria-label="Download ZIP">ZIP</button>
                             <button id="vcs-retry-btn"   class="vcs-btn vcs-retry-btn"   aria-label="Retry failed">Retry</button>
                         </div>
+                        <!-- UX #7: Keyboard hint -->
+                        <p class="vcs-kbd-hint" aria-hidden="true"><kbd>Enter</kbd> convert &nbsp; <kbd>Esc</kbd> cancel &nbsp; <kbd>Del</kbd> remove selected</p>
                         <div id="vcs-progress" aria-live="polite">
                             <div id="vcs-progress-text">Ready</div>
                             <div class="vcs-progress-bar-bg" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Conversion progress">
@@ -223,6 +243,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=9"></script>
+    <script src="script.js?v=10"></script>
 </body>
 </html>
