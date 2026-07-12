@@ -427,6 +427,15 @@
                 continue;
             }
 
+            // ── Deduplication: same filename + same size = same file ──
+            const alreadyQueued = STATE.files.some(
+                x => x.file.name === file.name && x.file.size === file.size
+            );
+            if (alreadyQueued) {
+                logMsg(`Skipped duplicate: ${file.name}`);
+                continue;
+            }
+
             const item = {
                 file: file,
                 id: Math.random().toString(36).substr(2, 9),
@@ -456,10 +465,11 @@
     function renderFileList() {
         const list = document.getElementById('vcs-file-list');
         list.innerHTML = '';
-        STATE.files.forEach(f => {
+        STATE.files.forEach((f, idx) => {
             const row = document.createElement('div');
             row.className = 'vcs-file-row' + (f.id === STATE.selectedFileId ? ' is-selected' : '');
             row.innerHTML = `
+                <span class="vcs-file-num">#${idx + 1}</span>
                 <span class="vcs-file-name" title="${escapeHTML(f.file.name)}">${escapeHTML(f.file.name)}</span>
                 <span>
                     <span class="vcs-file-status ${f.status === 'Done' ? 'is-done' : (f.status === 'Failed' ? 'is-failed' : (f.status.startsWith('Converting') ? 'is-converting' : ''))}">${f.status}</span>
@@ -470,6 +480,10 @@
             list.appendChild(row);
         });
         
+        // Update queue header count
+        const title = document.querySelector('#vcs-files-panel .vcs-block-title');
+        if (title) title.textContent = `Queue (${STATE.files.length})`;
+
         const rows = list.querySelectorAll('.vcs-file-row');
         rows.forEach((row, idx) => {
             row.addEventListener('click', e => {

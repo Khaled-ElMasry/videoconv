@@ -345,6 +345,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     padding: 11px 14px;
     border-bottom: 1px solid var(--border);
     font-size: 13px;
@@ -358,13 +359,26 @@ body {
 .vcs-file-row:hover { background: rgba(255,255,255,0.03); }
 .vcs-file-row.is-selected { background: rgba(125,211,252,0.06); border-left-color: var(--accent); padding-left: 11px; }
 
+/* Row number badge — #1, #2, #3 … */
+.vcs-file-num {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-hint);
+    min-width: 26px;
+    flex-shrink: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+}
+
 .vcs-file-name {
     font-weight: 500;
     color: var(--text-primary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 260px;
+    flex: 1;         /* take remaining space instead of fixed max-width */
+    min-width: 0;    /* allow shrinking inside flex */
 }
 
 .vcs-file-meta { display: flex; align-items: center; gap: 8px; }
