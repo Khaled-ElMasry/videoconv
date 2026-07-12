@@ -331,10 +331,11 @@
 
     function applyPreset(preset) {
         const p = {
-            'Music': { br: '192', format: 'mp3', sr: '44100', ch: '2', norm: false },
-            'Podcast': { br: '128', format: 'mp3', sr: '44100', ch: '1', norm: true },
-            'Voice': { br: '64', format: 'opus', sr: '22050', ch: '1', norm: true },
-            'Audiobook': { br: '64', format: 'm4a', sr: '22050', ch: '1', norm: true }
+            'Music': { br: '192', format: 'mp3', sr: '44100', ch: '2', norm: false, vbr: false },
+            'Podcast': { br: '128', format: 'mp3', sr: '44100', ch: '1', norm: true, vbr: false },
+            'Voice': { br: '64', format: 'opus', sr: '22050', ch: '1', norm: true, vbr: false },
+            'Audiobook': { br: '64', format: 'm4a', sr: '22050', ch: '1', norm: true, vbr: false },
+            'AI_Optimize': { br: '64', format: 'm4a', sr: '44100', ch: '1', norm: true, vbr: false }
         }[preset];
         if (p) {
             STATE.settings.format = p.format;
@@ -342,6 +343,7 @@
             STATE.settings.sampleRate = p.sr;
             STATE.settings.channels = p.ch;
             STATE.settings.normalize = p.norm;
+            STATE.settings.vbr = p.vbr;
             saveSettings();
             loadSettings(); // update UI
         }
