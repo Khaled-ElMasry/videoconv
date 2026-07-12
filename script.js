@@ -716,7 +716,9 @@
                         const a = document.createElement('a');
                         a.href = blobUrl;
                         a.download = outName;
+                        document.body.appendChild(a);
                         a.click();
+                        document.body.removeChild(a);
                         
                         await ffmpeg.deleteFile(outName);
                     }
@@ -794,7 +796,9 @@
                         const a = document.createElement('a');
                         a.href = item.blobUrl;
                         a.download = outName;
+                        document.body.appendChild(a);
                         a.click();
+                        document.body.removeChild(a);
                         
                         await ffmpeg.deleteFile(outName);
                     } catch (err) {
@@ -854,7 +858,9 @@
             const a = document.createElement('a');
             a.href = blobUrl;
             a.download = 'converted_audio.zip';
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             logMsg('ZIP download triggered.');
             setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
         } catch (err) {
