@@ -155,6 +155,18 @@
             });
         });
 
+        // ── Preset tab buttons ──
+        document.querySelectorAll('.vcs-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.vcs-tab').forEach(t => t.classList.remove('is-active'));
+                tab.classList.add('is-active');
+                const preset = tab.dataset.preset;
+                $('vcs-preset').value = preset;
+                applyPreset(preset);
+                updateTotalEstimate();
+            });
+        });
+
         ['vcs-format', 'vcs-preset', 'vcs-custom-br', 'vcs-vbr', 'vcs-normalize', 'vcs-samplerate', 'vcs-channels', 'vcs-template', 'vcs-merge'].forEach(id => {
             const el = $(id);
             if (el) {
@@ -404,7 +416,7 @@
         document.getElementById('vcs-files-panel').classList.add('is-shown');
         document.getElementById('vcs-settings-panel').classList.add('is-shown');
         document.getElementById('vcs-main-layout').classList.add('is-active');
-        document.querySelector('.vcs-container').classList.add('is-active');
+        document.querySelector('.vcs-card').classList.add('is-active');
         
         for (let i = 0; i < fileList.length; i++) {
             const file = fileList[i];
@@ -504,7 +516,7 @@
                     document.getElementById('vcs-settings-panel').classList.remove('is-shown');
                     document.getElementById('vcs-preview-panel').classList.remove('is-shown');
                     document.getElementById('vcs-main-layout').classList.remove('is-active');
-                    document.querySelector('.vcs-container').classList.remove('is-active');
+                    document.querySelector('.vcs-card').classList.remove('is-active');
                 }
             });
         });
