@@ -24,161 +24,167 @@
         </header>
 
         <main>
-            <!-- Dropzone Area -->
-            <div id="vcs-dropzone" role="button" tabindex="0" aria-label="Drop files or folder here or click to browse">
-                <span class="vcs-dropzone-icon">🎬</span>
-                <span class="vcs-dropzone-text">Drag & Drop media files here</span>
-                <span class="vcs-dropzone-subtext">
-                    Or click to select 
-                    <span id="vcs-select-files-btn" class="vcs-link">files</span> 
-                    or 
-                    <span id="vcs-select-folder-btn" class="vcs-link">folder</span>
-                </span>
-                <input type="file" id="vcs-file-input" multiple accept="video/*,audio/*" style="display:none">
-                <input type="file" id="vcs-folder-input" webkitdirectory directory multiple style="display:none">
+            <div id="vcs-main-layout" class="vcs-main-layout">
+                <div class="vcs-column-left">
+                    <!-- Dropzone Area -->
+                    <div id="vcs-dropzone" role="button" tabindex="0" aria-label="Drop files or folder here or click to browse">
+                        <span class="vcs-dropzone-icon">🎬</span>
+                        <span class="vcs-dropzone-text">Drag & Drop media files here</span>
+                        <span class="vcs-dropzone-subtext">
+                            Or click to select 
+                            <span id="vcs-select-files-btn" class="vcs-link">files</span> 
+                            or 
+                            <span id="vcs-select-folder-btn" class="vcs-link">folder</span>
+                        </span>
+                        <input type="file" id="vcs-file-input" multiple accept="video/*,audio/*" style="display:none">
+                        <input type="file" id="vcs-folder-input" webkitdirectory directory multiple style="display:none">
+                    </div>
+
+                    <!-- Video Preview Card -->
+                    <section id="vcs-preview-panel" class="vcs-panel">
+                        <h2 class="vcs-panel-title">Video Preview & Trimming</h2>
+                        <div class="vcs-preview-container">
+                            <video id="vcs-preview-player" controls style="width: 100%; border-radius: 8px; background: #000; outline: none; aspect-ratio: 16/9;"></video>
+                            <div class="vcs-preview-controls" style="margin-top: 12px; display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                                <span id="vcs-preview-time" style="font-size: 14px; font-weight: 500; opacity: 0.85;">No file selected</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button id="vcs-set-start-btn" type="button" class="vcs-btn vcs-secondary-btn" style="padding: 6px 12px; font-size: 13px;">Set Trim Start</button>
+                                    <button id="vcs-set-end-btn" type="button" class="vcs-btn vcs-secondary-btn" style="padding: 6px 12px; font-size: 13px;">Set Trim End</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Files Queue Card -->
+                    <section id="vcs-files-panel" class="vcs-panel">
+                        <h2 class="vcs-panel-title">Conversion Queue</h2>
+                        <div class="vcs-file-list-container">
+                            <div id="vcs-file-list"></div>
+                        </div>
+
+                        <div id="vcs-est" class="vcs-estimate-box">
+                            Estimated total output: ~0.0 MiB
+                        </div>
+
+                        <div class="vcs-btn-group">
+                            <button id="vcs-convert-btn" class="vcs-btn vcs-primary-btn">Convert All to MP3</button>
+                            <button id="vcs-cancel-btn" class="vcs-btn vcs-cancel-btn" style="display:none;">Cancel</button>
+                            <button id="vcs-zip-btn" class="vcs-btn vcs-zip-btn" style="display:none;">Download ZIP</button>
+                            <button id="vcs-retry-btn" class="vcs-btn vcs-retry-btn" style="display:none;">Retry Failed</button>
+                        </div>
+
+                        <!-- Progress Section -->
+                        <div id="vcs-progress">
+                            <div id="vcs-progress-text">Ready</div>
+                            <div class="vcs-progress-bar-bg" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                <div id="vcs-progress-fill"></div>
+                            </div>
+                        </div>
+
+                        <!-- Logs Area -->
+                        <button id="vcs-log-toggle" class="vcs-btn vcs-secondary-btn" style="margin-top:16px; width: 100%;">Show Log</button>
+                        <div id="vcs-log" class="log-panel" aria-live="polite"></div>
+                    </section>
+                </div>
+
+                <div class="vcs-column-right">
+                    <!-- Settings Card -->
+                    <section id="vcs-settings-panel" class="vcs-panel">
+                        <h2 class="vcs-panel-title">Conversion Settings</h2>
+                        <div class="vcs-settings-grid">
+                            <div class="vcs-settings-col">
+                                <label for="vcs-format" class="vcs-label">Format</label>
+                                <select id="vcs-format" class="vcs-select">
+                                    <option value="mp3">MP3 (MPEG Audio)</option>
+                                    <option value="m4a">AAC (.m4a)</option>
+                                    <option value="ogg">OGG Vorbis</option>
+                                    <option value="opus">Opus Audio</option>
+                                    <option value="flac">FLAC (Lossless)</option>
+                                    <option value="wav">WAV (Uncompressed)</option>
+                                </select>
+                            </div>
+
+                            <div class="vcs-settings-col">
+                                <label for="vcs-preset" class="vcs-label">Quality Preset</label>
+                                <select id="vcs-preset" class="vcs-select">
+                                    <option value="Music">Music (Standard)</option>
+                                    <option value="Podcast">Podcast (Voice Optimized)</option>
+                                    <option value="Voice">Voice Note (Compressed)</option>
+                                    <option value="Audiobook">Audiobook (Speech Optimized)</option>
+                                    <option value="AI_Optimize">AI Transcription</option>
+                                </select>
+                            </div>
+
+                            <div class="vcs-settings-col">
+                                <label for="vcs-samplerate" class="vcs-label">Sample Rate</label>
+                                <select id="vcs-samplerate" class="vcs-select">
+                                    <option value="44100">44.1 kHz</option>
+                                    <option value="48000">48 kHz</option>
+                                    <option value="22050">22.05 kHz</option>
+                                </select>
+                            </div>
+
+                            <div class="vcs-settings-col">
+                                <label for="vcs-channels" class="vcs-label">Audio Channels</label>
+                                <select id="vcs-channels" class="vcs-select">
+                                    <option value="2">Stereo</option>
+                                    <option value="1">Mono</option>
+                                </select>
+                            </div>
+
+                            <div class="vcs-settings-col">
+                                <label for="vcs-trim-start" class="vcs-label">Trim Start (seconds)</label>
+                                <input type="number" id="vcs-trim-start" class="vcs-input" placeholder="0" min="0" step="any">
+                            </div>
+
+                            <div class="vcs-settings-col">
+                                <label for="vcs-trim-end" class="vcs-label">Trim End (seconds)</label>
+                                <input type="number" id="vcs-trim-end" class="vcs-input" placeholder="End of file" min="0" step="any">
+                            </div>
+
+                            <div class="vcs-settings-col" style="grid-column: span 2;">
+                                <label for="vcs-template" class="vcs-label">Output Filename Template</label>
+                                <input type="text" id="vcs-template" class="vcs-input" value="{name}.{format}">
+                            </div>
+
+                            <div class="vcs-settings-col" style="grid-column: span 2;">
+                                <div class="vcs-checkbox-wrapper">
+                                    <label class="vcs-checkbox-label">
+                                        <input type="checkbox" id="vcs-vbr">
+                                        Variable Bitrate (VBR)
+                                    </label>
+                                    <label class="vcs-checkbox-label">
+                                        <input type="checkbox" id="vcs-normalize">
+                                        Normalize Volume (EBU R128 standard)
+                                    </label>
+                                    <label class="vcs-checkbox-label">
+                                        <input type="checkbox" id="vcs-merge">
+                                        Merge all files into a single audio output
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="vcs-bitrate-container">
+                            <span class="vcs-label">Select Audio Quality (Bitrate)</span>
+                            <div id="vcs-bitrates" class="vcs-chips-wrapper">
+                                <div class="vcs-chip" data-q="32" role="radio" aria-checked="false" tabindex="0">32 kbps</div>
+                                <div class="vcs-chip" data-q="64" role="radio" aria-checked="false" tabindex="0">64 kbps</div>
+                                <div class="vcs-chip" data-q="96" role="radio" aria-checked="false" tabindex="0">96 kbps</div>
+                                <div class="vcs-chip" data-q="128" role="radio" aria-checked="false" tabindex="0">128 kbps</div>
+                                <div class="vcs-chip" data-q="160" role="radio" aria-checked="false" tabindex="0">160 kbps</div>
+                                <div class="vcs-chip is-active" data-q="192" role="radio" aria-checked="true" tabindex="0">192 kbps</div>
+                                <div class="vcs-chip" data-q="256" role="radio" aria-checked="false" tabindex="0">256 kbps</div>
+                                <div class="vcs-chip" data-q="320" role="radio" aria-checked="false" tabindex="0">320 kbps</div>
+                                <div class="vcs-chip" data-q="custom" role="radio" aria-checked="false" tabindex="0">Custom</div>
+                            </div>
+                            <div style="margin-top: 12px;">
+                                <input type="number" id="vcs-custom-br" class="vcs-input" style="display:none; width: 140px;" placeholder="Custom kbps" min="8" max="512">
+                            </div>
+                        </div>
+                    </section>
+                </div>
             </div>
-
-            <!-- Settings Card -->
-            <section id="vcs-settings-panel" class="vcs-panel">
-                <h2 class="vcs-panel-title">Conversion Settings</h2>
-                <div class="vcs-settings-grid">
-                    <div class="vcs-settings-col">
-                        <label for="vcs-format" class="vcs-label">Format</label>
-                        <select id="vcs-format" class="vcs-select">
-                            <option value="mp3">MP3 (MPEG Audio)</option>
-                            <option value="m4a">AAC (.m4a)</option>
-                            <option value="ogg">OGG Vorbis</option>
-                            <option value="opus">Opus Audio</option>
-                            <option value="flac">FLAC (Lossless)</option>
-                            <option value="wav">WAV (Uncompressed)</option>
-                        </select>
-                    </div>
-
-                    <div class="vcs-settings-col">
-                        <label for="vcs-preset" class="vcs-label">Quality Preset</label>
-                        <select id="vcs-preset" class="vcs-select">
-                            <option value="Music">Music (Standard)</option>
-                            <option value="Podcast">Podcast (Voice Optimized)</option>
-                            <option value="Voice">Voice Note (Compressed)</option>
-                            <option value="Audiobook">Audiobook (Speech Optimized)</option>
-                            <option value="AI_Optimize">AI Transcription</option>
-                        </select>
-                    </div>
-
-                    <div class="vcs-settings-col">
-                        <label for="vcs-samplerate" class="vcs-label">Sample Rate</label>
-                        <select id="vcs-samplerate" class="vcs-select">
-                            <option value="44100">44.1 kHz</option>
-                            <option value="48000">48 kHz</option>
-                            <option value="22050">22.05 kHz</option>
-                        </select>
-                    </div>
-
-                    <div class="vcs-settings-col">
-                        <label for="vcs-channels" class="vcs-label">Audio Channels</label>
-                        <select id="vcs-channels" class="vcs-select">
-                            <option value="2">Stereo</option>
-                            <option value="1">Mono</option>
-                        </select>
-                    </div>
-
-                    <div class="vcs-settings-col">
-                        <label for="vcs-trim-start" class="vcs-label">Trim Start (seconds)</label>
-                        <input type="number" id="vcs-trim-start" class="vcs-input" placeholder="0" min="0" step="any">
-                    </div>
-
-                    <div class="vcs-settings-col">
-                        <label for="vcs-trim-end" class="vcs-label">Trim End (seconds)</label>
-                        <input type="number" id="vcs-trim-end" class="vcs-input" placeholder="End of file" min="0" step="any">
-                    </div>
-
-                    <div class="vcs-settings-col" style="grid-column: span 2;">
-                        <label for="vcs-template" class="vcs-label">Output Filename Template</label>
-                        <input type="text" id="vcs-template" class="vcs-input" value="{name}.{format}">
-                    </div>
-
-                    <div class="vcs-settings-col" style="grid-column: span 2;">
-                        <div class="vcs-checkbox-wrapper">
-                            <label class="vcs-checkbox-label">
-                                <input type="checkbox" id="vcs-vbr">
-                                Variable Bitrate (VBR)
-                            </label>
-                            <label class="vcs-checkbox-label">
-                                <input type="checkbox" id="vcs-normalize">
-                                Normalize Volume (EBU R128 standard)
-                            </label>
-                            <label class="vcs-checkbox-label">
-                                <input type="checkbox" id="vcs-merge">
-                                Merge all files into a single audio output
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="vcs-bitrate-container">
-                    <span class="vcs-label">Select Audio Quality (Bitrate)</span>
-                    <div id="vcs-bitrates" class="vcs-chips-wrapper">
-                        <div class="vcs-chip" data-q="32" role="radio" aria-checked="false" tabindex="0">32 kbps</div>
-                        <div class="vcs-chip" data-q="64" role="radio" aria-checked="false" tabindex="0">64 kbps</div>
-                        <div class="vcs-chip" data-q="96" role="radio" aria-checked="false" tabindex="0">96 kbps</div>
-                        <div class="vcs-chip" data-q="128" role="radio" aria-checked="false" tabindex="0">128 kbps</div>
-                        <div class="vcs-chip" data-q="160" role="radio" aria-checked="false" tabindex="0">160 kbps</div>
-                        <div class="vcs-chip is-active" data-q="192" role="radio" aria-checked="true" tabindex="0">192 kbps</div>
-                        <div class="vcs-chip" data-q="256" role="radio" aria-checked="false" tabindex="0">256 kbps</div>
-                        <div class="vcs-chip" data-q="320" role="radio" aria-checked="false" tabindex="0">320 kbps</div>
-                        <div class="vcs-chip" data-q="custom" role="radio" aria-checked="false" tabindex="0">Custom</div>
-                    </div>
-                    <div style="margin-top: 12px;">
-                        <input type="number" id="vcs-custom-br" class="vcs-input" style="display:none; width: 140px;" placeholder="Custom kbps" min="8" max="512">
-                    </div>
-                </div>
-            </section>
-
-            <!-- Video Preview Card -->
-            <section id="vcs-preview-panel" class="vcs-panel">
-                <h2 class="vcs-panel-title">Video Preview & Trimming</h2>
-                <div class="vcs-preview-container">
-                    <video id="vcs-preview-player" controls style="width: 100%; border-radius: 8px; background: #000; outline: none; aspect-ratio: 16/9;"></video>
-                    <div class="vcs-preview-controls" style="margin-top: 12px; display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                        <span id="vcs-preview-time" style="font-size: 14px; font-weight: 500; opacity: 0.85;">No file selected</span>
-                        <div style="display: flex; gap: 8px;">
-                            <button id="vcs-set-start-btn" type="button" class="vcs-btn vcs-secondary-btn" style="padding: 6px 12px; font-size: 13px;">Set Trim Start</button>
-                            <button id="vcs-set-end-btn" type="button" class="vcs-btn vcs-secondary-btn" style="padding: 6px 12px; font-size: 13px;">Set Trim End</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Files Queue Card -->
-            <section id="vcs-files-panel" class="vcs-panel">
-                <h2 class="vcs-panel-title">Conversion Queue</h2>
-                <div class="vcs-file-list-container">
-                    <div id="vcs-file-list"></div>
-                </div>
-
-                <div id="vcs-est" class="vcs-estimate-box">
-                    Estimated total output: ~0.0 MiB
-                </div>
-
-                <div class="vcs-btn-group">
-                    <button id="vcs-convert-btn" class="vcs-btn vcs-primary-btn">Convert All to MP3</button>
-                    <button id="vcs-cancel-btn" class="vcs-btn vcs-cancel-btn" style="display:none;">Cancel</button>
-                    <button id="vcs-zip-btn" class="vcs-btn vcs-zip-btn" style="display:none;">Download ZIP</button>
-                    <button id="vcs-retry-btn" class="vcs-btn vcs-retry-btn" style="display:none;">Retry Failed</button>
-                </div>
-
-                <!-- Progress Section -->
-                <div id="vcs-progress">
-                    <div id="vcs-progress-text">Ready</div>
-                    <div class="vcs-progress-bar-bg" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                        <div id="vcs-progress-fill"></div>
-                    </div>
-                </div>
-
-                <!-- Logs Area -->
-                <button id="vcs-log-toggle" class="vcs-btn vcs-secondary-btn" style="margin-top:16px; width: 100%;">Show Log</button>
-                <div id="vcs-log" class="log-panel" aria-live="polite"></div>
-            </section>
         </main>
     </div>
     

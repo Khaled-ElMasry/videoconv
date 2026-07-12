@@ -401,6 +401,8 @@
         
         document.getElementById('vcs-files-panel').classList.add('is-shown');
         document.getElementById('vcs-settings-panel').classList.add('is-shown');
+        document.getElementById('vcs-main-layout').classList.add('is-active');
+        document.querySelector('.vcs-container').classList.add('is-active');
         
         for (let i = 0; i < fileList.length; i++) {
             const file = fileList[i];
@@ -499,6 +501,8 @@
                     document.getElementById('vcs-files-panel').classList.remove('is-shown');
                     document.getElementById('vcs-settings-panel').classList.remove('is-shown');
                     document.getElementById('vcs-preview-panel').classList.remove('is-shown');
+                    document.getElementById('vcs-main-layout').classList.remove('is-active');
+                    document.querySelector('.vcs-container').classList.remove('is-active');
                 }
             });
         });
