@@ -36,7 +36,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="stylesheet" href="style.css?v=7">
     <script src="ffmpeg.js"></script>
     <script src="ffmpeg-util.js"></script>
     <script src="jszip.js"></script>
@@ -67,23 +67,28 @@
 
             <!-- ── Drop Zone ── -->
             <div id="vcs-dropzone"
-                 role="button" tabindex="0"
-                 aria-label="Drop video or audio files here, or press Enter to open file picker">
+                 role="region"
+                 aria-label="File drop zone. Drag files here or use the buttons below to browse.">
                 <span class="vcs-dz-icon" aria-hidden="true">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <polyline points="14 2 14 8 20 8"/>
                         <line x1="12" y1="12" x2="12" y2="18"/>
                         <polyline points="9 15 12 18 15 15"/>
                     </svg>
                 </span>
-                <strong class="vcs-dz-title">Drag &amp; Drop files here</strong>
-                <span class="vcs-dz-sub">
-                    or click to select
-                    <span id="vcs-select-files-btn" class="vcs-link" role="button" tabindex="0" aria-label="Select individual files">files</span>
-                    or a
-                    <span id="vcs-select-folder-btn" class="vcs-link" role="button" tabindex="0" aria-label="Select a folder">folder</span>
-                </span>
+                <strong class="vcs-dz-title">Drag &amp; Drop media files here</strong>
+                <p class="vcs-dz-hint">Supports video and audio — MP4, MKV, MOV, AVI, MP3, WAV and more</p>
+                <div class="vcs-dz-actions">
+                    <button id="vcs-select-files-btn" class="vcs-dz-btn" type="button" aria-label="Browse and select individual files">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                        Browse Files
+                    </button>
+                    <button id="vcs-select-folder-btn" class="vcs-dz-btn" type="button" aria-label="Browse and select a folder">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                        Browse Folder
+                    </button>
+                </div>
                 <input type="file" id="vcs-file-input" multiple accept="video/*,audio/*" aria-hidden="true" tabindex="-1">
                 <input type="file" id="vcs-folder-input" webkitdirectory directory multiple aria-hidden="true" tabindex="-1">
             </div>
@@ -222,6 +227,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=7"></script>
 </body>
 </html>
