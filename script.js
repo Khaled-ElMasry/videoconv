@@ -477,10 +477,9 @@
         
         logMsg('Loading FFmpeg core...');
         
-        const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
         const coreOptions = {
-            coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-            wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm')
+            coreURL: await toBlobURL('ffmpeg-core.js', 'text/javascript'),
+            wasmURL: await toBlobURL('ffmpeg-core.wasm', 'application/wasm')
         };
         
         if (typeof SharedArrayBuffer === 'undefined') {
