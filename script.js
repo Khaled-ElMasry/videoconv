@@ -16,7 +16,7 @@
             normalize: false,
             trimStart: '',
             trimEnd: '',
-            filenameTemplate: '{name}_{bitrate}.{format}',
+            filenameTemplate: '{name}.{format}',
             mergeToOne: false
         }
     };
@@ -309,7 +309,7 @@
             $('vcs-channels').value = STATE.settings.channels;
             $('vcs-trim-start').value = STATE.settings.trimStart || '';
             $('vcs-trim-end').value = STATE.settings.trimEnd || '';
-            $('vcs-template').value = STATE.settings.filenameTemplate || '{name}_{bitrate}.{format}';
+            $('vcs-template').value = STATE.settings.filenameTemplate || '{name}.{format}';
             $('vcs-merge').checked = STATE.settings.mergeToOne || false;
 
             document.querySelectorAll('.vcs-chip').forEach(c => {
