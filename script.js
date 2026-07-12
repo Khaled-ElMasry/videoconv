@@ -331,11 +331,13 @@
 
     function applyPreset(preset) {
         const p = {
-            'Music': { br: '192', format: 'mp3', sr: '44100', ch: '2', norm: false, vbr: false },
-            'Podcast': { br: '128', format: 'mp3', sr: '44100', ch: '1', norm: true, vbr: false },
-            'Voice': { br: '64', format: 'opus', sr: '22050', ch: '1', norm: true, vbr: false },
-            'Audiobook': { br: '64', format: 'm4a', sr: '22050', ch: '1', norm: true, vbr: false },
-            'AI_Optimize': { br: '64', format: 'm4a', sr: '44100', ch: '1', norm: true, vbr: false }
+            'Music':      { br: '192', format: 'mp3',  sr: '44100', ch: '2', norm: false, vbr: false },
+            'Podcast':    { br: '128', format: 'mp3',  sr: '44100', ch: '1', norm: true,  vbr: false },
+            'Voice':      { br: '64',  format: 'opus', sr: '22050', ch: '1', norm: true,  vbr: false },
+            'Audiobook':  { br: '64',  format: 'm4a',  sr: '22050', ch: '1', norm: true,  vbr: false },
+            'AI_Optimize':{ br: '64',  format: 'mp3',  sr: '16000', ch: '1', norm: true,  vbr: false },
+            'Whisper':    { br: '32',  format: 'mp3',  sr: '16000', ch: '1', norm: false, vbr: false },
+            'NotebookLM': { br: '64',  format: 'mp3',  sr: '16000', ch: '1', norm: false, vbr: false },
         }[preset];
         if (p) {
             STATE.settings.format = p.format;

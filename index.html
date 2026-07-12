@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Application Stylesheet -->
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
     <!-- Dependency Scripts -->
     <script src="ffmpeg.js"></script>
     <script src="ffmpeg-util.js"></script>
@@ -111,7 +111,9 @@
                                     <option value="Podcast">Podcast (Voice Optimized)</option>
                                     <option value="Voice">Voice Note (Compressed)</option>
                                     <option value="Audiobook">Audiobook (Speech Optimized)</option>
-                                    <option value="AI_Optimize">AI Transcription</option>
+                                    <option value="AI_Optimize">AI Transcription (General)</option>
+                                    <option value="Whisper">↳ Whisper / ChatGPT (32k · 16kHz · Mono)</option>
+                                    <option value="NotebookLM">↳ NotebookLM (64k · 16kHz · Mono)</option>
                                 </select>
                             </div>
 
@@ -121,6 +123,7 @@
                                     <option value="44100">44.1 kHz</option>
                                     <option value="48000">48 kHz</option>
                                     <option value="22050">22.05 kHz</option>
+                                    <option value="16000">16 kHz (AI / Whisper)</option>
                                 </select>
                             </div>
 
@@ -189,6 +192,6 @@
     </div>
     
     <!-- Application Logic -->
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>
