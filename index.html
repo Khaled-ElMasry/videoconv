@@ -36,7 +36,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
     <script src="ffmpeg.js"></script>
     <script src="ffmpeg-util.js"></script>
     <script src="jszip.js"></script>
@@ -56,13 +56,11 @@
 
             <!-- ── Preset Tabs ── -->
             <nav class="vcs-tabs" aria-label="Quality presets" id="vcs-preset-tabs">
-                <button class="vcs-tab is-active" data-preset="Music"      type="button">🎵 Music</button>
-                <button class="vcs-tab"           data-preset="Podcast"    type="button">🎙 Podcast</button>
-                <button class="vcs-tab"           data-preset="Voice"      type="button">🔈 Voice</button>
-                <button class="vcs-tab"           data-preset="Audiobook"  type="button">📖 Audiobook</button>
-                <button class="vcs-tab"           data-preset="AI_Optimize" type="button">🤖 AI</button>
-                <button class="vcs-tab"           data-preset="Whisper"    type="button">↳ Whisper</button>
-                <button class="vcs-tab"           data-preset="NotebookLM" type="button">↳ NotebookLM</button>
+                <button class="vcs-tab is-active" data-preset="Music"       type="button">🎵 Music</button>
+                <button class="vcs-tab"           data-preset="Podcast"     type="button">🎙 Podcast</button>
+                <button class="vcs-tab"           data-preset="Voice"       type="button">🔈 Voice</button>
+                <button class="vcs-tab"           data-preset="Audiobook"   type="button">📖 Audiobook</button>
+                <button class="vcs-tab"           data-preset="AI_Optimize" type="button">🤖 Universal AI</button>
             </nav>
 
             <!-- ── Drop Zone ── -->
@@ -169,17 +167,15 @@
                                 </select>
                             </div>
                             <div class="vcs-field">
-                                <label for="vcs-preset" class="vcs-label">Preset (detail)</label>
-                                <select id="vcs-preset" class="vcs-select">
-                                    <option value="Music">Music</option>
-                                    <option value="Podcast">Podcast</option>
-                                    <option value="Voice">Voice Note</option>
-                                    <option value="Audiobook">Audiobook</option>
-                                    <option value="AI_Optimize">AI Transcription</option>
-                                    <option value="Whisper">Whisper / ChatGPT</option>
-                                    <option value="NotebookLM">NotebookLM</option>
-                                </select>
-                            </div>
+                            <label for="vcs-preset" class="vcs-label">Preset (detail)</label>
+                            <select id="vcs-preset" class="vcs-select">
+                                <option value="Music">Music</option>
+                                <option value="Podcast">Podcast</option>
+                                <option value="Voice">Voice Note</option>
+                                <option value="Audiobook">Audiobook</option>
+                                <option value="AI_Optimize">🤖 Universal AI</option>
+                            </select>
+                        </div>
                             <div class="vcs-field">
                                 <label for="vcs-trim-start" class="vcs-label">Trim Start (s)</label>
                                 <input type="number" id="vcs-trim-start" class="vcs-input" placeholder="0" min="0" step="any" aria-describedby="vcs-trim-hint">
@@ -227,6 +223,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
 </body>
 </html>

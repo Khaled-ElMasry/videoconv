@@ -93,24 +93,24 @@
     function bindEvents() {
         const $ = id => document.getElementById(id);
         
-        $('vcs-dropzone').addEventListener('click', e => {
-            if (e.target.id === 'vcs-select-folder-btn') {
-                e.stopPropagation();
-                $('vcs-folder-input').click();
-            } else if (e.target.id === 'vcs-select-files-btn' || e.target.closest('#vcs-dropzone')) {
-                $('vcs-file-input').click();
-            }
+        // Browse Files button — direct click, not inside dropzone handler
+        $('vcs-select-files-btn').addEventListener('click', e => {
+            e.stopPropagation();
+            $('vcs-file-input').click();
         });
 
-        $('vcs-dropzone').addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                $('vcs-file-input').click();
-            }
+        // Browse Folder button — triggers folder input, grabs ALL files inside
+        $('vcs-select-folder-btn').addEventListener('click', e => {
+            e.stopPropagation();
+            $('vcs-folder-input').click();
         });
 
         $('vcs-file-input').addEventListener('change', e => addFiles(e.target.files));
-        $('vcs-folder-input').addEventListener('change', e => addFiles(e.target.files));
+        // Folder: grab every file the OS returns (entire recursive folder contents)
+        $('vcs-folder-input').addEventListener('change', e => {
+            const all = Array.from(e.target.files);
+            if (all.length) addFiles(all);
+        });
         
         $('vcs-dropzone').addEventListener('dragover', e => {
             e.preventDefault();
@@ -343,13 +343,11 @@
 
     function applyPreset(preset) {
         const p = {
-            'Music':      { br: '192', format: 'mp3',  sr: '44100', ch: '2', norm: false, vbr: false },
-            'Podcast':    { br: '128', format: 'mp3',  sr: '44100', ch: '1', norm: true,  vbr: false },
-            'Voice':      { br: '64',  format: 'opus', sr: '22050', ch: '1', norm: true,  vbr: false },
-            'Audiobook':  { br: '64',  format: 'm4a',  sr: '22050', ch: '1', norm: true,  vbr: false },
-            'AI_Optimize':{ br: '64',  format: 'mp3',  sr: '16000', ch: '1', norm: true,  vbr: false },
-            'Whisper':    { br: '32',  format: 'mp3',  sr: '16000', ch: '1', norm: false, vbr: false },
-            'NotebookLM': { br: '64',  format: 'mp3',  sr: '16000', ch: '1', norm: false, vbr: false },
+            'Music':        { br: '192', format: 'mp3',  sr: '44100', ch: '2', norm: false, vbr: false },
+            'Podcast':      { br: '128', format: 'mp3',  sr: '44100', ch: '1', norm: true,  vbr: false },
+            'Voice':        { br: '64',  format: 'opus', sr: '22050', ch: '1', norm: true,  vbr: false },
+            'Audiobook':    { br: '64',  format: 'm4a',  sr: '22050', ch: '1', norm: true,  vbr: false },
+            'AI_Optimize':  { br: '48',  format: 'mp3',  sr: '16000', ch: '1', norm: false, vbr: false },
         }[preset];
         if (p) {
             STATE.settings.format = p.format;
