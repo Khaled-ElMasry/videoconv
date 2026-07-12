@@ -133,6 +133,21 @@
                 </div>
             </section>
 
+            <!-- Video Preview Card -->
+            <section id="vcs-preview-panel" class="vcs-panel">
+                <h2 class="vcs-panel-title">Video Preview & Trimming</h2>
+                <div class="vcs-preview-container">
+                    <video id="vcs-preview-player" controls style="width: 100%; border-radius: 8px; background: #000; outline: none; aspect-ratio: 16/9;"></video>
+                    <div class="vcs-preview-controls" style="margin-top: 12px; display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <span id="vcs-preview-time" style="font-size: 14px; font-weight: 500; opacity: 0.85;">No file selected</span>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="vcs-set-start-btn" type="button" class="vcs-btn vcs-secondary-btn" style="padding: 6px 12px; font-size: 13px;">Set Trim Start</button>
+                            <button id="vcs-set-end-btn" type="button" class="vcs-btn vcs-secondary-btn" style="padding: 6px 12px; font-size: 13px;">Set Trim End</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Files Queue Card -->
             <section id="vcs-files-panel" class="vcs-panel">
                 <h2 class="vcs-panel-title">Conversion Queue</h2>

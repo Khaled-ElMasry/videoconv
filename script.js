@@ -1,6 +1,7 @@
 (function () {
     const STATE = {
         files: [],
+        selectedFileId: null,
         isConverting: false,
         cancelFlag: false,
         ffmpeg: null,
@@ -154,7 +155,7 @@
             });
         });
 
-        ['vcs-format', 'vcs-preset', 'vcs-custom-br', 'vcs-vbr', 'vcs-normalize', 'vcs-samplerate', 'vcs-channels', 'vcs-trim-start', 'vcs-trim-end', 'vcs-template', 'vcs-merge'].forEach(id => {
+        ['vcs-format', 'vcs-preset', 'vcs-custom-br', 'vcs-vbr', 'vcs-normalize', 'vcs-samplerate', 'vcs-channels', 'vcs-template', 'vcs-merge'].forEach(id => {
             const el = $(id);
             if (el) {
                 el.addEventListener('change', () => {
@@ -168,6 +169,38 @@
                     saveSettings();
                     updateTotalEstimate();
                 });
+            }
+        });
+
+        ['vcs-trim-start', 'vcs-trim-end'].forEach(id => {
+            const el = $(id);
+            if (el) {
+                el.addEventListener('input', () => {
+                    updateSelectedFileTrim();
+                    saveSettings();
+                });
+                el.addEventListener('change', () => {
+                    updateSelectedFileTrim();
+                    saveSettings();
+                });
+            }
+        });
+
+        $('vcs-set-start-btn').addEventListener('click', () => {
+            const player = $('vcs-preview-player');
+            if (player && STATE.selectedFileId) {
+                $('vcs-trim-start').value = player.currentTime.toFixed(3);
+                updateSelectedFileTrim();
+                saveSettings();
+            }
+        });
+
+        $('vcs-set-end-btn').addEventListener('click', () => {
+            const player = $('vcs-preview-player');
+            if (player && STATE.selectedFileId) {
+                $('vcs-trim-end').value = player.currentTime.toFixed(3);
+                updateSelectedFileTrim();
+                saveSettings();
             }
         });
 
@@ -385,7 +418,9 @@
                 duration: 0,
                 blobUrl: null,
                 blobData: null,
-                outName: ''
+                outName: '',
+                trimStart: '',
+                trimEnd: ''
             };
             STATE.files.push(item);
             
@@ -396,6 +431,10 @@
         }
         renderFileList();
         updateTotalEstimate();
+
+        if (STATE.files.length > 0 && !STATE.selectedFileId) {
+            selectFile(STATE.files[0].id);
+        }
     }
 
     function renderFileList() {
@@ -403,7 +442,7 @@
         list.innerHTML = '';
         STATE.files.forEach(f => {
             const row = document.createElement('div');
-            row.className = 'vcs-file-row';
+            row.className = 'vcs-file-row' + (f.id === STATE.selectedFileId ? ' is-selected' : '');
             row.innerHTML = `
                 <span class="vcs-file-name" title="${escapeHTML(f.file.name)}">${escapeHTML(f.file.name)}</span>
                 <span>
@@ -415,19 +454,49 @@
             list.appendChild(row);
         });
         
+        const rows = list.querySelectorAll('.vcs-file-row');
+        rows.forEach((row, idx) => {
+            row.addEventListener('click', e => {
+                if (e.target.classList.contains('vcs-remove-btn') || e.target.closest('.vcs-remove-btn')) return;
+                const item = STATE.files[idx];
+                if (item) {
+                    selectFile(item.id);
+                }
+            });
+        });
+
         document.querySelectorAll('.vcs-remove-btn').forEach(btn => {
             btn.addEventListener('click', e => {
+                e.stopPropagation();
                 const id = e.target.dataset.id;
                 const item = STATE.files.find(x => x.id === id);
                 if (item && item.blobUrl) {
                     try { URL.revokeObjectURL(item.blobUrl); } catch(err){}
                 }
+
+                if (STATE.selectedFileId === id) {
+                    STATE.selectedFileId = null;
+                    const player = document.getElementById('vcs-preview-player');
+                    if (player) {
+                        if (player.dataset.vcsDynamicUrl) {
+                            try { URL.revokeObjectURL(player.src); } catch(e){}
+                        }
+                        player.src = '';
+                        player.removeAttribute('data-vcs-dynamic-url');
+                    }
+                }
+                
                 STATE.files = STATE.files.filter(x => x.id !== id);
                 renderFileList();
                 updateTotalEstimate();
-                if (STATE.files.length === 0) {
+                if (STATE.files.length > 0) {
+                    if (!STATE.selectedFileId) {
+                        selectFile(STATE.files[0].id);
+                    }
+                } else {
                     document.getElementById('vcs-files-panel').classList.remove('is-shown');
                     document.getElementById('vcs-settings-panel').classList.remove('is-shown');
+                    document.getElementById('vcs-preview-panel').classList.remove('is-shown');
                 }
             });
         });
@@ -438,7 +507,13 @@
         let hasDuration = false;
         STATE.files.forEach(f => {
             if (f.duration > 0) {
-                totalDuration += f.duration;
+                let start = parseFloat(f.trimStart);
+                let end = parseFloat(f.trimEnd);
+                if (isNaN(start)) start = 0;
+                if (isNaN(end) || end <= 0) end = f.duration;
+                let activeDur = Math.max(0, Math.min(f.duration, end) - start);
+                
+                totalDuration += activeDur;
                 hasDuration = true;
             }
         });
@@ -455,6 +530,64 @@
         const estEl = document.getElementById('vcs-est');
         if (estEl) {
             estEl.textContent = `Estimated total output: ~${formatted}`;
+        }
+    }
+
+    function selectFile(id) {
+        STATE.selectedFileId = id;
+        
+        const list = document.getElementById('vcs-file-list');
+        if (list) {
+            const rows = list.querySelectorAll('.vcs-file-row');
+            STATE.files.forEach((f, idx) => {
+                if (rows[idx]) {
+                    if (f.id === id) {
+                        rows[idx].classList.add('is-selected');
+                    } else {
+                        rows[idx].classList.remove('is-selected');
+                    }
+                }
+            });
+        }
+        
+        const item = STATE.files.find(x => x.id === id);
+        if (!item) return;
+
+        const previewPanel = document.getElementById('vcs-preview-panel');
+        if (previewPanel) {
+            previewPanel.classList.add('is-shown');
+        }
+        
+        const player = document.getElementById('vcs-preview-player');
+        const timeLabel = document.getElementById('vcs-preview-time');
+        
+        if (player) {
+            if (player.dataset.vcsDynamicUrl) {
+                try { URL.revokeObjectURL(player.src); } catch(e){}
+            }
+            const fileUrl = URL.createObjectURL(item.file);
+            player.src = fileUrl;
+            player.dataset.vcsDynamicUrl = 'true';
+        }
+        
+        if (timeLabel) {
+            timeLabel.textContent = `Selected: ${item.file.name}`;
+        }
+        
+        const startInput = document.getElementById('vcs-trim-start');
+        const endInput = document.getElementById('vcs-trim-end');
+        if (startInput) startInput.value = item.trimStart;
+        if (endInput) endInput.value = item.trimEnd;
+    }
+
+    function updateSelectedFileTrim() {
+        if (STATE.selectedFileId) {
+            const item = STATE.files.find(x => x.id === STATE.selectedFileId);
+            if (item) {
+                item.trimStart = document.getElementById('vcs-trim-start').value;
+                item.trimEnd = document.getElementById('vcs-trim-end').value;
+                updateTotalEstimate();
+            }
         }
     }
 
@@ -631,8 +764,8 @@
                         await ffmpeg.writeFile(inName, await fetchFile(item.file));
                         
                         const args = ['-i', inName];
-                        if (STATE.settings.trimStart) args.push('-ss', STATE.settings.trimStart);
-                        if (STATE.settings.trimEnd) args.push('-to', STATE.settings.trimEnd);
+                        if (item.trimStart) args.push('-ss', item.trimStart);
+                        if (item.trimEnd) args.push('-to', item.trimEnd);
                         if (STATE.settings.normalize) args.push('-af', 'loudnorm=I=-16:TP=-1.5:LRA=11');
                         
                         args.push('-ar', STATE.settings.sampleRate);

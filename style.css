@@ -273,6 +273,23 @@ body {
     border-bottom: 1px solid var(--border);
     font-size: 14px;
     animation: slideIn 0.3s ease-out;
+    cursor: pointer;
+    transition: background-color 0.2s, border-left 0.2s, padding-left 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.vcs-file-row:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.vcs-file-row.is-selected {
+    background: rgba(159, 143, 255, 0.08);
+    border-left-color: var(--accent);
+    padding-left: 17px;
+}
+
+.vcs-file-row.is-selected:hover {
+    background: rgba(159, 143, 255, 0.12);
 }
 
 .vcs-file-row:last-child {
