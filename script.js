@@ -833,7 +833,7 @@
                         progressFill.style.width = (overall * 100) + '%';
 
                         let etaStr = '';
-                        if (fp > 0.01) {
+                        if (fp > 0.001) { // Show ETA after just 0.1% instead of 1%
                             const elapsed = Date.now() - startTime;
                             const total = elapsed / fp;
                             const remaining = Math.max(0, total - elapsed);
@@ -843,7 +843,8 @@
                             etaStr = ` - ~${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')} left`;
                         }
 
-                        progressText.textContent = `Converting ${index + 1}/${convertQueue.length}: ${item.file.name} (${(fp * 100).toFixed(0)}%)${etaStr}`;
+                        // Show 1 decimal place so they can see tiny amounts of progress on huge files
+                        progressText.textContent = `Converting ${index + 1}/${convertQueue.length}: ${item.file.name} (${(fp * 100).toFixed(1)}%)${etaStr}`;
                     });
 
                     const ext    = PURE.pickExtension(item.file.name);
@@ -861,6 +862,10 @@
                     try {
                         await ffmpeg.writeFile(inName, await fetchFile(item.file));
                         const args = ['-threads', '1'];
+                        if (fmt === 'mp4' && STATE.settings.preset === 'AI_Video' && !item.isAudioOnly) {
+                            // Safely skip non-keyframes to massively speed up decoding
+                            args.push('-skip_frame', 'nokey');
+                        }
                         args.push('-i', inName);
                         if (item.trimStart) args.push('-ss', item.trimStart);
                         if (item.trimEnd)   args.push('-to', item.trimEnd);
@@ -871,8 +876,8 @@
 
                         if (fmt === 'mp4' && !item.isAudioOnly) {
                             if (STATE.settings.preset === 'AI_Video') {
-                                // Smart scaling (don't upscale), MJPEG codec for fastest possible zero-math encoding
-                                args.push('-vf', 'scale=-2:\'min(ih,720)\',fps=1', '-c:v', 'mjpeg', '-q:v', '5');
+                                // Smart scaling, MJPEG codec, and VFR to prevent memory buffering crashes on massive files
+                                args.push('-vf', 'scale=-2:\'min(ih,720)\'', '-r', '1', '-vsync', '2', '-c:v', 'mjpeg', '-q:v', '5');
                             } else {
                                 args.push('-c:v', 'copy');
                             }
