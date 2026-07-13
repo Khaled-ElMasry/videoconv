@@ -899,7 +899,11 @@
                         triggerDownload(item.blobUrl, outName);
                         await ffmpeg.deleteFile(outName);
                     } catch(err) {
-                        logMsg('Error on ' + item.file.name + ': ' + err.message);
+                        let errMsg = err.message || err.toString();
+                        if (errMsg === '[object Object]' || !err.message) {
+                            errMsg = "Memory Crash (File too large for browser RAM)";
+                        }
+                        logMsg('Error on ' + item.file.name + ': ' + errMsg);
                         item.status = 'Failed'; failCount++;
                     } finally {
                         try { await ffmpeg.deleteFile(inName); } catch(e){}
