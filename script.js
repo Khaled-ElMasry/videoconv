@@ -752,6 +752,9 @@
         progressPanel.style.display = 'block';
         progressFill.classList.remove('is-error');
         progressFill.style.width = '0%';
+        
+        const throttleWarn = document.getElementById('vcs-throttle-warn');
+        if (throttleWarn) throttleWarn.style.display = 'block';
 
         let doneCount = 0, failCount = 0;
         const usedNames = new Set();
@@ -857,7 +860,7 @@
 
                     try {
                         await ffmpeg.writeFile(inName, await fetchFile(item.file));
-                        const args = [];
+                        const args = ['-threads', '1'];
                         if (fmt === 'mp4' && STATE.settings.preset === 'AI_Video' && !item.isAudioOnly) {
                             // Turbo-charge WebAssembly decoding by skipping all non-keyframes
                             args.push('-skip_frame', 'nokey');
@@ -872,8 +875,8 @@
 
                         if (fmt === 'mp4' && !item.isAudioOnly) {
                             if (STATE.settings.preset === 'AI_Video') {
-                                // 720p at 1 FPS. Switched from libx264 to mpeg4 for blazing fast WebAssembly encoding
-                                args.push('-vf', 'scale=-2:720,fps=1', '-c:v', 'mpeg4', '-q:v', '5');
+                                // Smart scaling (don't upscale), MJPEG codec for fastest possible zero-math encoding
+                                args.push('-vf', 'scale=-2:\'min(ih,720)\',fps=1', '-c:v', 'mjpeg', '-q:v', '5');
                             } else {
                                 args.push('-c:v', 'copy');
                             }
@@ -912,6 +915,8 @@
         STATE.isConverting = false;
         convertBtn.disabled = false;
         cancelBtn.style.display = 'none';
+        const throttleWarn = document.getElementById('vcs-throttle-warn');
+        if (throttleWarn) throttleWarn.style.display = 'none';
 
         // Polish #16: persistent progress bar with final result
         progressFill.style.width = '100%';

@@ -36,7 +36,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=12">
     <script src="ffmpeg.js"></script>
     <script src="ffmpeg-util.js"></script>
     <script src="jszip.js"></script>
@@ -144,6 +144,10 @@
                         </div>
                         <!-- UX #7: Keyboard hint -->
                         <p class="vcs-kbd-hint" aria-hidden="true"><kbd>Enter</kbd> convert &nbsp; <kbd>Esc</kbd> cancel &nbsp; <kbd>Del</kbd> remove selected</p>
+                        
+                        <!-- Ultimate Speed: Prevent Throttling Warning -->
+                        <p id="vcs-throttle-warn" class="vcs-throttle-warn" style="display:none;">⚠️ <strong>Keep this tab open and active!</strong> Browsers heavily throttle background tabs, making conversion much slower.</p>
+                        
                         <div id="vcs-progress" aria-live="polite">
                             <div id="vcs-progress-text">Ready</div>
                             <div class="vcs-progress-bar-bg" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Conversion progress">
@@ -246,6 +250,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=11"></script>
+    <script src="script.js?v=12"></script>
 </body>
 </html>
