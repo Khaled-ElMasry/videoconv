@@ -408,6 +408,7 @@
             'Voice':       { br: '64',  format: 'opus', sr: '22050', ch: '1', norm: true,  vbr: false },
             'Audiobook':   { br: '64',  format: 'm4a',  sr: '22050', ch: '1', norm: true,  vbr: false },
             'AI_Optimize': { br: '48',  format: 'mp3',  sr: '16000', ch: '1', norm: false, vbr: false },
+            'AI_Video':    { br: '48',  format: 'mp4',  sr: '16000', ch: '1', norm: false, vbr: false },
         }[preset];
         if (p) {
             STATE.settings.preset    = preset;
@@ -793,7 +794,7 @@
                         });
                         await ffmpeg.exec(args);
                         const data = await ffmpeg.readFile(outName);
-                        const blob = new Blob([data.buffer], { type: 'audio/' + fmt });
+                        const blob = new Blob([data.buffer], { type: fmt === 'mp4' ? 'video/mp4' : 'audio/' + fmt });
                         const blobUrl = URL.createObjectURL(blob);
                         convertQueue.forEach(item => {
                             item.status = 'Done'; item.blobUrl = blobUrl;
@@ -849,12 +850,23 @@
                         args.push('-ar', STATE.settings.sampleRate, '-ac', STATE.settings.channels);
                         let br = STATE.settings.bitrate === 'custom' ? STATE.settings.customBitrate : STATE.settings.bitrate;
                         if (!br) br = '192';
+
+                        if (fmt === 'mp4' && !item.isAudioOnly) {
+                            if (STATE.settings.preset === 'AI_Video') {
+                                args.push('-vf', 'scale=-2:720', '-r', '1', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '32');
+                            } else {
+                                args.push('-c:v', 'copy');
+                            }
+                        }
+
                         if (STATE.settings.vbr && ['mp3','m4a','ogg'].includes(fmt)) args.push('-q:a', '2');
-                        else if (!['wav','flac'].includes(fmt)) args.push('-b:a', br + 'k');
+                        else if (!['wav','flac','mp4'].includes(fmt)) args.push('-b:a', br + 'k');
+                        else if (fmt === 'mp4') args.push('-b:a', br + 'k'); // mp4 uses aac by default usually, needs bitrate
+
                         args.push(outName);
                         await ffmpeg.exec(args);
                         const data = await ffmpeg.readFile(outName);
-                        const blob = new Blob([data.buffer], { type: 'audio/' + fmt });
+                        const blob = new Blob([data.buffer], { type: fmt === 'mp4' ? 'video/mp4' : 'audio/' + fmt });
                         item.blobUrl  = URL.createObjectURL(blob);
                         item.outName  = outName;
                         item.blobData = blob;

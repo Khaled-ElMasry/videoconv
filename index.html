@@ -36,7 +36,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
     <script src="ffmpeg.js"></script>
     <script src="ffmpeg-util.js"></script>
     <script src="jszip.js"></script>
@@ -69,6 +69,7 @@
                 <button class="vcs-tab"           data-preset="Voice"       type="button">🔈 Voice</button>
                 <button class="vcs-tab"           data-preset="Audiobook"   type="button">📖 Audiobook</button>
                 <button class="vcs-tab"           data-preset="AI_Optimize" type="button">🤖 Universal AI</button>
+                <button class="vcs-tab"           data-preset="AI_Video"    type="button">🎥 AI Video</button>
             </nav>
 
             <!-- ── Drop Zone ── -->
@@ -164,6 +165,7 @@
                                 <select id="vcs-format" class="vcs-select">
                                     <option value="mp3">MP3</option>
                                     <option value="m4a">AAC / M4A</option>
+                                    <option value="mp4">MP4 (Video)</option>
                                     <option value="ogg">OGG Vorbis</option>
                                     <option value="opus">Opus</option>
                                     <option value="flac">FLAC (Lossless)</option>
@@ -194,6 +196,7 @@
                                 <option value="Voice">Voice Note</option>
                                 <option value="Audiobook">Audiobook</option>
                                 <option value="AI_Optimize">🤖 Universal AI</option>
+                                <option value="AI_Video">🎥 AI Video (1 FPS)</option>
                             </select>
                         </div>
                             <div class="vcs-field">
@@ -243,6 +246,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=10"></script>
+    <script src="script.js?v=11"></script>
 </body>
 </html>
