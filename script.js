@@ -861,10 +861,6 @@
                     try {
                         await ffmpeg.writeFile(inName, await fetchFile(item.file));
                         const args = ['-threads', '1'];
-                        if (fmt === 'mp4' && STATE.settings.preset === 'AI_Video' && !item.isAudioOnly) {
-                            // Turbo-charge WebAssembly decoding by skipping all non-keyframes
-                            args.push('-skip_frame', 'nokey');
-                        }
                         args.push('-i', inName);
                         if (item.trimStart) args.push('-ss', item.trimStart);
                         if (item.trimEnd)   args.push('-to', item.trimEnd);
