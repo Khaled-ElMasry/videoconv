@@ -408,7 +408,7 @@
             'Voice':       { br: '64',  format: 'opus', sr: '22050', ch: '1', norm: true,  vbr: false },
             'Audiobook':   { br: '64',  format: 'm4a',  sr: '22050', ch: '1', norm: true,  vbr: false },
             'AI_Optimize': { br: '48',  format: 'mp3',  sr: '16000', ch: '1', norm: false, vbr: false },
-            'AI_Video':    { br: '48',  format: 'mp4',  sr: '16000', ch: '1', norm: false, vbr: false },
+            'AI_Video':    { br: '48',  format: 'mkv',  sr: '16000', ch: '1', norm: false, vbr: false },
         }[preset];
         if (p) {
             STATE.settings.preset    = preset;
@@ -798,7 +798,8 @@
                         });
                         await ffmpeg.exec(args);
                         const data = await ffmpeg.readFile(outName);
-                        const blob = new Blob([data.buffer], { type: fmt === 'mp4' ? 'video/mp4' : 'audio/' + fmt });
+                        const mimeTypeMerge = fmt === 'mp4' ? 'video/mp4' : (fmt === 'mkv' ? 'video/x-matroska' : 'audio/' + fmt);
+                        const blob = new Blob([data.buffer], { type: mimeTypeMerge });
                         const blobUrl = URL.createObjectURL(blob);
                         convertQueue.forEach(item => {
                             item.status = 'Done'; item.blobUrl = blobUrl;
@@ -862,7 +863,7 @@
                     try {
                         await ffmpeg.writeFile(inName, await fetchFile(item.file));
                         const args = ['-threads', '1'];
-                        if (fmt === 'mp4' && STATE.settings.preset === 'AI_Video' && !item.isAudioOnly) {
+                        if (['mp4', 'mkv'].includes(fmt) && STATE.settings.preset === 'AI_Video' && !item.isAudioOnly) {
                             // Safely skip non-keyframes to massively speed up decoding
                             args.push('-skip_frame', 'nokey');
                         }
@@ -874,7 +875,7 @@
                         let br = STATE.settings.bitrate === 'custom' ? STATE.settings.customBitrate : STATE.settings.bitrate;
                         if (!br) br = '192';
 
-                        if (fmt === 'mp4' && !item.isAudioOnly) {
+                        if (['mp4', 'mkv'].includes(fmt) && !item.isAudioOnly) {
                             if (STATE.settings.preset === 'AI_Video') {
                                 // Smart scaling, MJPEG codec, and VFR to prevent memory buffering crashes on massive files
                                 args.push('-vf', 'scale=-2:\'min(ih,720)\'', '-r', '1', '-vsync', '2', '-c:v', 'mjpeg', '-q:v', '5');
@@ -884,13 +885,14 @@
                         }
 
                         if (STATE.settings.vbr && ['mp3','m4a','ogg'].includes(fmt)) args.push('-q:a', '2');
-                        else if (!['wav','flac','mp4'].includes(fmt)) args.push('-b:a', br + 'k');
-                        else if (fmt === 'mp4') args.push('-b:a', br + 'k'); // mp4 uses aac by default usually, needs bitrate
+                        else if (!['wav','flac','mp4','mkv'].includes(fmt)) args.push('-b:a', br + 'k');
+                        else if (['mp4', 'mkv'].includes(fmt)) args.push('-b:a', br + 'k'); // video formats use aac by default usually, needs bitrate
 
                         args.push(outName);
                         await ffmpeg.exec(args);
                         const data = await ffmpeg.readFile(outName);
-                        const blob = new Blob([data.buffer], { type: fmt === 'mp4' ? 'video/mp4' : 'audio/' + fmt });
+                        const mimeType = fmt === 'mp4' ? 'video/mp4' : (fmt === 'mkv' ? 'video/x-matroska' : 'audio/' + fmt);
+                        const blob = new Blob([data.buffer], { type: mimeType });
                         item.blobUrl  = URL.createObjectURL(blob);
                         item.outName  = outName;
                         item.blobData = blob;
