@@ -872,8 +872,8 @@
 
                         if (fmt === 'mp4' && !item.isAudioOnly) {
                             if (STATE.settings.preset === 'AI_Video') {
-                                // 720p at 1 FPS for highest context, utilizing skip_frame for speed
-                                args.push('-vf', 'scale=-2:720,fps=1', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '32');
+                                // 720p at 1 FPS. Switched from libx264 to mpeg4 for blazing fast WebAssembly encoding
+                                args.push('-vf', 'scale=-2:720,fps=1', '-c:v', 'mpeg4', '-q:v', '5');
                             } else {
                                 args.push('-c:v', 'copy');
                             }
