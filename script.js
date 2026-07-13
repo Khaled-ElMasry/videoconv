@@ -915,8 +915,8 @@
         STATE.isConverting = false;
         convertBtn.disabled = false;
         cancelBtn.style.display = 'none';
-        const throttleWarn = document.getElementById('vcs-throttle-warn');
-        if (throttleWarn) throttleWarn.style.display = 'none';
+        const throttleWarnEnd = document.getElementById('vcs-throttle-warn');
+        if (throttleWarnEnd) throttleWarnEnd.style.display = 'none';
 
         // Polish #16: persistent progress bar with final result
         progressFill.style.width = '100%';
