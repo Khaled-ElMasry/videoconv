@@ -823,11 +823,24 @@
                     renderFileList();
                     progressText.textContent = `Converting ${item.file.name}...`;
 
+                    const startTime = Date.now();
                     ffmpeg.on('progress', ({ progress }) => {
                         const fp = PURE.clampProgress(progress);
                         const overall = (index + fp) / convertQueue.length;
                         progressFill.style.width = (overall * 100) + '%';
-                        progressText.textContent = `Converting ${index + 1}/${convertQueue.length}: ${item.file.name} (${(fp * 100).toFixed(0)}%)`;
+
+                        let etaStr = '';
+                        if (fp > 0.01) {
+                            const elapsed = Date.now() - startTime;
+                            const total = elapsed / fp;
+                            const remaining = Math.max(0, total - elapsed);
+                            const rSecs = Math.round(remaining / 1000);
+                            const m = Math.floor(rSecs / 60);
+                            const s = rSecs % 60;
+                            etaStr = ` - ~${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')} left`;
+                        }
+
+                        progressText.textContent = `Converting ${index + 1}/${convertQueue.length}: ${item.file.name} (${(fp * 100).toFixed(0)}%)${etaStr}`;
                     });
 
                     const ext    = PURE.pickExtension(item.file.name);
@@ -844,7 +857,12 @@
 
                     try {
                         await ffmpeg.writeFile(inName, await fetchFile(item.file));
-                        const args = ['-i', inName];
+                        const args = [];
+                        if (fmt === 'mp4' && STATE.settings.preset === 'AI_Video' && !item.isAudioOnly) {
+                            // Turbo-charge WebAssembly decoding by skipping all non-keyframes
+                            args.push('-skip_frame', 'nokey');
+                        }
+                        args.push('-i', inName);
                         if (item.trimStart) args.push('-ss', item.trimStart);
                         if (item.trimEnd)   args.push('-to', item.trimEnd);
                         if (STATE.settings.normalize) args.push('-af', 'loudnorm=I=-16:TP=-1.5:LRA=11');
@@ -854,8 +872,8 @@
 
                         if (fmt === 'mp4' && !item.isAudioOnly) {
                             if (STATE.settings.preset === 'AI_Video') {
-                                // Downscale to 480p and 1 frame every 2 seconds for much faster WebAssembly encoding
-                                args.push('-vf', 'scale=-2:480', '-r', '0.5', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '32');
+                                // 720p at 1 FPS for highest context, utilizing skip_frame for speed
+                                args.push('-vf', 'scale=-2:720,fps=1', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '32');
                             } else {
                                 args.push('-c:v', 'copy');
                             }
