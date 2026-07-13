@@ -636,8 +636,6 @@
         let warning = '';
         if (estMiB > 200) {
             warning = `<span class="vcs-est-warn is-over">⚠ Exceeds NotebookLM 200MB limit</span>`;
-        } else if (estMiB > 25 && STATE.settings.format !== 'mp4') {
-            warning = `<span class="vcs-est-warn is-caution">⚠ Exceeds Whisper API 25MB limit</span>`;
         }
         estEl.innerHTML = `Estimated output: ~${PURE.formatBytes(estMiB)} ${warning}`;
     }
