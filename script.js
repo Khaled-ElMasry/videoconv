@@ -625,6 +625,9 @@
             : parseInt(STATE.settings.bitrate, 10);
         if (isNaN(br) || !br) br = 192;
 
+        // If it's AI_Video, add a rough 50kbps overhead for the 1/2 FPS video track
+        if (STATE.settings.preset === 'AI_Video') br += 50;
+
         const estMiB = PURE.estimateMiB(totalDuration, br);
         const estEl  = document.getElementById('vcs-est');
         if (!estEl) return;
@@ -632,9 +635,9 @@
         // Feature #12: size warning against AI limits
         let warning = '';
         if (estMiB > 200) {
-            warning = `<span class="vcs-est-warn is-over">⚠ Exceeds NotebookLM 200 MB limit</span>`;
-        } else if (estMiB > 25) {
-            warning = `<span class="vcs-est-warn is-caution">⚠ Exceeds ChatGPT/Whisper 25 MB limit</span>`;
+            warning = `<span class="vcs-est-warn is-over">⚠ Exceeds NotebookLM 200MB limit</span>`;
+        } else if (estMiB > 25 && STATE.settings.format !== 'mp4') {
+            warning = `<span class="vcs-est-warn is-caution">⚠ Exceeds Whisper API 25MB limit</span>`;
         }
         estEl.innerHTML = `Estimated output: ~${PURE.formatBytes(estMiB)} ${warning}`;
     }
@@ -853,7 +856,8 @@
 
                         if (fmt === 'mp4' && !item.isAudioOnly) {
                             if (STATE.settings.preset === 'AI_Video') {
-                                args.push('-vf', 'scale=-2:720', '-r', '1', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '32');
+                                // Downscale to 480p and 1 frame every 2 seconds for much faster WebAssembly encoding
+                                args.push('-vf', 'scale=-2:480', '-r', '0.5', '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '32');
                             } else {
                                 args.push('-c:v', 'copy');
                             }
